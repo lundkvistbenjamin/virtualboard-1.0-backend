@@ -1,0 +1,27 @@
+@apiURL=http://localhost:8080
+
+@token={{$dotenv TEMP_TOKEN}}
+
+###
+GET {{apiURL}}/notes
+Authorization: Bearer {{token}}
+
+###
+POST {{apiURL}}/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "note": "Min nya note 2"
+}
+
+###
+PATCH {{apiURL}}/notes/66ebe33da854d8cff981c1bf
+Content-Type: application/json
+
+{
+    "note": "gå på krog"
+}
+
+###
+DELETE {{apiURL}}/notes/66ebe33da854d8cff981c1bf

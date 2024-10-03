@@ -1,0 +1,33 @@
+{
+  "name": "projekt1-virtualboard1.0",
+  "version": "1.0.0",
+  "description": "Virtual Board 1.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx prisma generate && node src/server.js",
+    "dev": "npx prisma generate && nodemon -L src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lundkvistbenjamin/PROJEKT1-VirtualBoard1.0.git"
+  },
+  "author": "Benjamin Lundkvist, Kevin Görgü",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lundkvistbenjamin/PROJEKT1-VirtualBoard1.0/issues"
+  },
+  "homepage": "https://github.com/lundkvistbenjamin/PROJEKT1-VirtualBoard1.0#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "prisma": "^5.20.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
