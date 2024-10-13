@@ -7,11 +7,10 @@ module.exports = (req, res, next) => {
         console.log(`authorize jwt: ${authHeader}`);
         const token = authHeader?.split(' ')[1];
 
-        // Verifiera JWT:n
+        // Verifiera JWT
         const userData = jwt.verify(token, process.env.JWT_SECRET);
         console.log(`token authorized for user ${userData.sub} ${userData.name}`);
 
-        // Lägg med userData i request-objektet
         req.userData = userData;
 
         next();
@@ -23,7 +22,5 @@ module.exports = (req, res, next) => {
             message: "Authorization error",
             error: error.message
         });
-
     }
-
 };

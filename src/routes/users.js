@@ -1,45 +1,58 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
 const authorize = require('../middleware/auth');
+const { PrismaClient } = require('@prisma/client');
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-
+// Skapa användare med 5 default boards
 router.post('/', async (req, res) => {
-    console.log(req.body);
-    // https://www.npmjs.com/package/bcrypt    password,      salt-rounds 10
+    const { name, password } = req.body;
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     try {
+        // Skapa användare
         const newUser = await prisma.user.create({
             data: {
                 name: req.body.name,
-                email: req.body.email,
                 password: hashedPassword
             }
         });
 
-        res.send({ msg: "New user created!" });
+        // Skapa 3 boards i boards endpoint
+        const boards = [];
+        for (let i = 1; i <= 3; i++) {
+            boards.push({
+                title: `Tavla ${i}`,
+                userId: newUser.id
+            });
+        }
+
+        // Spara boards i databasen
+        await prisma.boards.createMany({
+            data: boards
+        });
+
+        res.send({ msg: "Användare skapad." });
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({ msg: "ERROR" });
+        res.status(500).send({ msg: "Något gick fel, försök igen." });
     }
-
 });
 
+// Logga in med användarnamn och lösenord
 router.post('/login', async (req, res) => {
     const user = await prisma.user.findUnique({
-        where: { email: req.body.email }
+        where: { name: req.body.name }
     });
 
     if (user == null) {
         console.log("BAD USERNAME");
         return res.status(401).send({ msg: "Authentication failed" });
     }
-    // kolla att det skickade lösenordet matchar hashen i databasen
+
     const match = await bcrypt.compare(req.body.password, user.password);
 
     if (!match) {
@@ -49,7 +62,6 @@ router.post('/login', async (req, res) => {
 
     const token = await jwt.sign({
         sub: user.id,
-        email: user.email,
         name: user.name,
         role: user.role
     }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -57,20 +69,12 @@ router.post('/login', async (req, res) => {
     res.send({ msg: "Login OK", jwt: token });
 });
 
-// Get för att få min egen användares data (enligt jwt)
-router.get('/profile', authorize, async (req, res) => {
-    try {
-        const user = await prisma.user.findUnique({
-            where: {
-                id: req.userData.sub
-            }
-        });
-        res.send({ msg: `Hej ${user.name}!` });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ msg: "Error" });
-    }
+// Endpoint för att verifiera jwt token
+router.get('/verify-token', authorize, (req, res) => {
+    res.status(200).json({
+        msg: "Token is valid",
+        user: req.userData
+    });
 });
-
 
 module.exports = router;
