@@ -1,18 +1,18 @@
-const express = require('express');
-const { PrismaClient } = require('@prisma/client');
-const authorize = require('../middleware/auth');
+const express = require("express");
+const { PrismaClient } = require("@prisma/client");
+const authorize = require("../middleware/auth");
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Get all notes for a specific board
-router.get('/:boardId', authorize, async (req, res) => {
-    const { boardId } = req.params; // Get boardId from the URL
-    console.log(`Fetching notes for board ID: ${boardId}`);
+// Få alla notes för en specifik board
+router.get("/:boardId", authorize, async (req, res) => {
+    const { boardId } = req.params;
+
     try {
         const notes = await prisma.notes.findMany({
             where: {
-                boardId: boardId, // Ensure you're getting notes for the specific board
+                boardId: boardId
             },
         });
         res.send(notes);
@@ -22,21 +22,18 @@ router.get('/:boardId', authorize, async (req, res) => {
     }
 });
 
-
-// Create a new note for a specific board
-router.post('/:boardId', authorize, async (req, res) => {
-    const { boardId } = req.params; // Get boardId from the URL
-    console.log(`Creating note for board ID: ${boardId}`);
-    console.log(req.body);
+// Skapa note för en specifik board
+router.post("/:boardId", authorize, async (req, res) => {
+    const { boardId } = req.params;
 
     try {
         const newNote = await prisma.notes.create({
             data: {
-                boardId: boardId, // Set the boardId for the new note
-                content: req.body.content, // Use content from request body
+                boardId: boardId,
+                content: req.body.content,
                 positionX: req.body.positionX,
                 positionY: req.body.positionY,
-                color: req.body.color,
+                color: req.body.color
             },
         });
 
@@ -47,14 +44,13 @@ router.post('/:boardId', authorize, async (req, res) => {
     }
 });
 
-// Update a specific note for a specific board
-router.put('/:boardId/:id', authorize, async (req, res) => {
+// Uppdatera note
+router.put("/:boardId/:id", authorize, async (req, res) => {
     const { id, boardId } = req.params;
-    console.log(`Updating note ID: ${id} for board ID: ${boardId}`);
 
     try {
         const updateData = {};
-
+        // Uppdaterar om content inte är undefined
         if (req.body.content !== undefined) updateData.content = req.body.content;
         if (req.body.positionX !== undefined) updateData.positionX = req.body.positionX;
         if (req.body.positionY !== undefined) updateData.positionY = req.body.positionY;
@@ -62,7 +58,7 @@ router.put('/:boardId/:id', authorize, async (req, res) => {
 
         const updatedNote = await prisma.notes.update({
             where: { id: id },
-            data: updateData,
+            data: updateData
         });
 
         res.send({ msg: `Note ${id} updated`, note: updatedNote });
@@ -72,15 +68,13 @@ router.put('/:boardId/:id', authorize, async (req, res) => {
     }
 });
 
-
-// Delete a specific note for a specific board
-router.delete('/:boardId/:id', authorize, async (req, res) => {
-    const { id, boardId } = req.params; // Get boardId and note id from the URL
-    console.log(`Deleting note ID: ${id} for board ID: ${boardId}`);
+// Ta bort note
+router.delete("/:boardId/:id", authorize, async (req, res) => {
+    const { id, boardId } = req.params;
 
     try {
         await prisma.notes.delete({
-            where: { id: id },
+            where: { id: id }
         });
         res.send({ msg: "Note deleted!" });
     } catch (error) {
