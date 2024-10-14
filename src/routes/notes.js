@@ -34,7 +34,8 @@ router.post('/:boardId', authorize, async (req, res) => {
             data: {
                 boardId: boardId, // Set the boardId for the new note
                 content: req.body.content, // Use content from request body
-                position: req.body.position,
+                positionX: req.body.positionX,
+                positionY: req.body.positionY,
                 color: req.body.color,
             },
         });
@@ -48,24 +49,29 @@ router.post('/:boardId', authorize, async (req, res) => {
 
 // Update a specific note for a specific board
 router.put('/:boardId/:id', authorize, async (req, res) => {
-    const { id, boardId } = req.params; // Get boardId and note id from the URL
+    const { id, boardId } = req.params;
     console.log(`Updating note ID: ${id} for board ID: ${boardId}`);
 
     try {
+        const updateData = {};
+
+        if (req.body.content !== undefined) updateData.content = req.body.content;
+        if (req.body.positionX !== undefined) updateData.positionX = req.body.positionX;
+        if (req.body.positionY !== undefined) updateData.positionY = req.body.positionY;
+        if (req.body.color !== undefined) updateData.color = req.body.color;
+
         const updatedNote = await prisma.notes.update({
             where: { id: id },
-            data: {
-                content: req.body.content,
-                position: req.body.position,
-                color: req.body.color,
-            },
+            data: updateData,
         });
+
         res.send({ msg: `Note ${id} updated`, note: updatedNote });
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ msg: "Error updating note" });
     }
 });
+
 
 // Delete a specific note for a specific board
 router.delete('/:boardId/:id', authorize, async (req, res) => {

@@ -1,0 +1,33 @@
+@apiURL=http://localhost:8080
+@token={{$dotenv TEMP_TOKEN}}
+
+### Create a new note for the specific board
+POST {{apiURL}}/notes/670bae80410775b28ae13185
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "content": "Note 4", 
+    "positionX": "", 
+    "positionY": "",
+    "color": ""
+}
+
+### Get all notes for the specific board
+GET {{apiURL}}/notes/670bae80410775b28ae13185
+Authorization: Bearer {{token}}
+
+### Update a specific note for the specific board
+PUT {{apiURL}}/notes/670bae80410775b28ae13185/670baed1410775b28ae13188
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "content": "This isifth note on the board.", 
+    "color": ""
+}
+
+### Delete a specific note for the specific board
+DELETE {{apiURL}}/notes/670679feafa8bb072f820f79/6706861c40143fda95c05843
+Authorization: Bearer {{token}}
+

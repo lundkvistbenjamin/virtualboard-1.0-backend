@@ -30,7 +30,8 @@ model Notes {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   boardId   String   @db.ObjectId
   content   String
-  position  String
+  positionX String
+  positionY String
   color     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

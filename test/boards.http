@@ -1,0 +1,19 @@
+@apiURL=http://localhost:8080
+@token={{$dotenv TEMP_TOKEN}}
+
+### Create a new board
+POST {{apiURL}}/boards/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "My First Board 2"
+}
+
+### Get all boards for the user
+GET {{apiURL}}/boards/
+Authorization: Bearer {{token}}
+
+### Get all notes for a specific board
+GET {{apiURL}}/boards/670659c2032883a99877368f/notes
+Authorization: Bearer {{token}}
