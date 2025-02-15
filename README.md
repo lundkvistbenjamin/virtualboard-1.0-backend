@@ -11,7 +11,7 @@ Clone the repository and follow the installation instructions for the respective
 
 ### Backend:
 ```bash
-git clone https://github.com/lundkvistbenjamin/virtualboard-1.0-backend.git
+git clone https://github.com/lundkvistbenjamin/virtualboard-backend.git
 cd virtualboard-1.0-backend
 npm install
 npm start
