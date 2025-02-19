@@ -15,3 +15,7 @@ git clone https://github.com/lundkvistbenjamin/virtualboard-backend.git
 cd virtualboard-1.0-backend
 npm install
 npm start
+```
+
+## **License**  
+MIT License  
